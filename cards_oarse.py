@@ -16,6 +16,12 @@ def get_html(url, params=""):
     r = requests.get(url, headers=HEADERS, params=params)
     return r
 
+#
+# def pages_count(html):
+#     soup = BeautifulSoup(html, "html.parser")
+#     pagination = soup.find_all("li", class_="active").get_text()
+#     print(pagination)
+
 
 def get_content(html):
     soup = BeautifulSoup(html, "html.parser")
@@ -34,5 +40,21 @@ def get_content(html):
     return cards
 
 
-html = get_html(URL)
-print(get_content(html.text))
+def parser():
+    PAGINATION = int(input("How many page do u want to parse ? ").strip())
+    html = get_html(URL)
+    if html.status_code == 200:
+        cards = []
+        for page in range (1, PAGINATION + 1):
+            print(f"Parsing page number : {page}...")
+            html = get_html(URL, params={"page": page})
+            cards.extend(get_content(html.text))
+        print(cards)
+    else:
+        print("error")
+
+parser()
+
+
+# html = get_html(URL)
+# print(get_content(html.text))
