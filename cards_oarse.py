@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import csv
 
+CSV = 'cards.csv'
 HOST = 'https://minfin.com.ua/'
 URL = 'https://minfin.com.ua/cards/'
 HEADERS = {
@@ -39,6 +40,16 @@ def get_content(html):
         )
     return cards
 
+def save_doc(items, path):
+    with open (path, "w", newline='') as f:
+        writer = csv.writer(f, delimiter=";")
+        writer.writerow(["Name of the producr", "Link", "Bank", "Card Image"])
+        for item in items:
+            writer.writerow([item["title"],item["link product"], item["brand"], item["card_img"]])
+
+
+
+
 
 def parser():
     PAGINATION = int(input("How many page do u want to parse ? ").strip())
@@ -49,7 +60,8 @@ def parser():
             print(f"Parsing page number : {page}...")
             html = get_html(URL, params={"page": page})
             cards.extend(get_content(html.text))
-        print(cards)
+            save_doc(cards, CSV)
+        
     else:
         print("error")
 
